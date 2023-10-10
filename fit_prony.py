@@ -225,28 +225,28 @@ def plot_GMaxw(df_GMaxw, units):
     stor = '{}_stor'.format(modul)
     loss = '{}_loss'.format(modul)
     relax = '{}_relax'.format(modul)
-    # if df_GMaxw.domain == 'freq':
-    fig, (ax1, ax2) = plt.subplots(1,2, figsize=(8,0.75*4))
-    df_GMaxw.plot(x='f', y=[stor], label=["{}'".format(modul)],
-            ax=ax1, logx=True, logy=False, ls='-', lw=2, color=['C0'])
-    df_GMaxw.plot(x='f', y=[loss], label=["{}''".format(modul)],
-            ax=ax2, logx=True, logy=False, ls=':', lw=2, color=['C1'])
-    ax1.set_xlabel('Frequency (Hz)')
-    ax1.set_ylabel('Storage modulus ({})'.format(units[stor]))
-    ax2.set_xlabel('Frequency (Hz)')
-    ax2.set_ylabel('Loss modulus ({})'.format(units[stor])) 
-    ax1.legend()
-    ax2.legend()
-    plt.savefig(os.path.join(f_plot, f"GMX_fit_modulus_freq.jpg"), dpi=300)
-    # elif df_GMaxw.domain == 'time':
-    fig, ax1 = plt.subplots(figsize=(4,0.75*4))
-    df_GMaxw.plot(x='t', y=[relax], 
-            ax=ax1, logx=True, logy=False, ls='--', lw=2, color=['C2'],
-            label=["{}(t)".format(modul)],)
-    ax1.set_xlabel('Time ({})'.format(units['t']))
-    ax1.set_ylabel('Relaxation modulus ({})'.format(units[relax])) 
-    ax1.legend()
-    plt.savefig(os.path.join(f_plot, f"GMX_fit_modulus_time.jpg"), dpi=300)
+    if df_GMaxw.domain == 'freq':
+        fig, (ax1, ax2) = plt.subplots(1,2, figsize=(8,0.75*4))
+        df_GMaxw.plot(x='f', y=[stor], label=["{}'".format(modul)],
+                ax=ax1, logx=True, logy=False, ls='-', lw=2, color=['C0'])
+        df_GMaxw.plot(x='f', y=[loss], label=["{}''".format(modul)],
+                ax=ax2, logx=True, logy=False, ls=':', lw=2, color=['C1'])
+        ax1.set_xlabel('Frequency (Hz)')
+        ax1.set_ylabel('Storage modulus ({})'.format(units[stor]))
+        ax2.set_xlabel('Frequency (Hz)')
+        ax2.set_ylabel('Loss modulus ({})'.format(units[stor])) 
+        ax1.legend()
+        ax2.legend()
+        plt.savefig(os.path.join(f_plot, f"GMX_fit_modulus_freq.jpg"), dpi=300)
+    elif df_GMaxw.domain == 'time':
+        fig, ax1 = plt.subplots(figsize=(4,0.75*4))
+        df_GMaxw.plot(x='t', y=[relax], 
+                ax=ax1, logx=True, logy=False, ls='--', lw=2, color=['C2'],
+                label=["{}(t)".format(modul)],)
+        ax1.set_xlabel('Time ({})'.format(units['t']))
+        ax1.set_ylabel('Relaxation modulus ({})'.format(units[relax])) 
+        ax1.legend()
+        plt.savefig(os.path.join(f_plot, f"GMX_fit_modulus_time.jpg"), dpi=300)
 
 def plot_optfit(df_master, dict_prony, N, units):
     for i in range(3,N_opt+1):
@@ -323,12 +323,12 @@ for i in range(len(Th_input)):
     header = '{0:^7s},{1:^7s}\n{2:^7s},{3:^7s}'.format('t', 'G_relax', 's', 'GPa')
     np.savetxt(os.path.join(f_plot, f"output_YT16_Th"+repr(round(Th_input[i],2))+".csv"),output_YT16, fmt=('%5.4e','%5.4e'), comments='', header=header,delimiter=",")
     np.savetxt(os.path.join(f_plot, f"output_Mc11.csv"),output_Mc11, fmt=('%5.4e','%5.4e'), comments='', header=header,delimiter=",")
-    np.savetxt(os.path.join(f_plot, f"output_Modified_Anrade.csv"),output_An, fmt=('%5.4e','%5.4e'), comments='', header=header,delimiter=",")
+    np.savetxt(os.path.join(f_plot, f"output_Modified_Andrade.csv"),output_An, fmt=('%5.4e','%5.4e'), comments='', header=header,delimiter=",")
 
     #Load user master curve in frequency domain
     data = visco.load.file(os.path.join(f_plot, f"output_YT16_Th"+repr(round(Th_input[i],2))+".csv"))
     # data = visco.load.file('output_Mc11.csv')
-    # data = visco.load.file('output_Modified_Anrade.csv')
+    # data = visco.load.file('output_Modified_Andrade.csv')
 
     RefT=float(T_input[i])
     domain = 'time'

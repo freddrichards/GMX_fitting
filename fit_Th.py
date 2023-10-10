@@ -102,9 +102,8 @@ def normcompliance_YT16(tau_n, T_h):
 
 def peak(Ap, sigmap, taup, tau):
     
-    # peak = Ap*np.exp(-(np.log(tau/taup)**2)/(2*sigmap**2))
-    peak = sp.special.gamma
-    
+    peak = Ap*np.exp(-(np.log(tau/taup)**2)/(2*sigmap**2))+(((np.sqrt(2*np.pi))/2)*Ap*sigmap*(1-sp.special.erf((np.log(tau/taup))/(np.sqrt(2)*sigmap))))
+    # peak = sp.special.gamma
     return peak
 
     
@@ -124,12 +123,12 @@ def plot_resall_fit(master, GMaxw, df, df_fit, N_opt):
         ax1.semilogx(df_fit['t'], GMaxw[x,:], ls='-', lw=2, color=c)
         y=peak(0.03,5.5,6e-5,df_fit['t'])
         
-        fits=sp.stats.norm.fit(master[x,:])
-        print (fits)
-        ax1.semilogx(df_fit['t'],-sp.stats.norm.pdf(df_fit['t'],fits[0],fits[1]), ls='', marker='x', markersize=2, color=c)
+        # fits=sp.stats.norm.fit(master[x,:])
+        # print (fits)
+        # ax1.semilogx(df_fit['t'],-sp.stats.norm.pdf(df_fit['t'],fits[0],fits[1]), ls='', marker='x', markersize=2, color=c)
         # ax1.semilogx(df_fit['t'], y, ls='', marker='x', markersize=2, color=c)
-        # I think problem here is that data is not in equal time increments (all in log increments)
-        print (x,np.shape(master))
+        # I think problem here is need to account for different impact of Xp in J1 and J2
+        
         x=x+2
 
     ax1.set_xlabel('Time (s)')
