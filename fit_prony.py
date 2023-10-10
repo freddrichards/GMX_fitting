@@ -99,6 +99,32 @@ def normcompliance_YT16(tau_n, T_h):
 
     return J1_norm, J2_norm
 
+def relaxation_integrand_YT16(tau, an, temp, depth, t):   # calculate time-dependent integrand required to find creep compliance
+
+    taud, X,_,_ = relaxation_spectrum_YT16(tau,an,temp,depth)    # get relaxation spectrum value
+    integrand = X * (1 - np.exp(-t/tau)) *(1/tau) # multiply relaxation spectrum by exponential term (and divide by tau?) to calculate integrand
+  
+def relaxation_integrand_Mc11(tau, an, temp, depth, t):   # calculate time-dependent integrand required to find creep compliance
+
+    taud, X,_,_ = relaxation_spectrum_Mc11(tau,an,temp,depth)    # get relaxation spectrum value
+    integrand = X * (1 - np.exp(-t/tau)) *(1/tau) # multiply relaxation spectrum by exponential term (and divide by tau?) to calculate integrand
+        
+def J_YT16(t,eta,anyt,temp,depth,Ju):
+    
+    # DEFINE CREEP FUNCTION
+    I_YT16 = cumtrapz(relaxation_integrand_YT16(np.logspace(start=np.log10(1e-256), stop=np.log10(1e256), num=3001, base=10.0),anyt,temp,depth,t),np.logspace(start=np.log10(1e-256), stop=np.log10(1e256), num=3001, base=10.0))[-1]
+    J_YT16= Ju*(1+I_YT16)+(t/eta)
+    
+    return J_YT16
+    
+def J_Mc11(t,eta,anyt,temp,depth,Ju):
+    
+    # DEFINE CREEP FUNCTION
+    I_Mc11 = cumtrapz(relaxation_integrand_Mc11(np.logspace(start=np.log10(1e-256), stop=np.log10(1e256), num=3001, base=10.0),anyt,temp,depth,t),np.logspace(start=np.log10(1e-256), stop=np.log10(1e256), num=3001, base=10.0))[-1]
+    J_Mc11= Ju*(1+I_Mc11)+(t/eta)
+    
+    return J_Mc11
+    
 def plot_smooth(df_master, units):
     
     modul = df_master.modul
@@ -327,8 +353,8 @@ for i in range(len(Th_input)):
 
     #Load user master curve in frequency domain
     data = visco.load.file(os.path.join(f_plot, f"output_YT16_Th"+repr(round(Th_input[i],2))+".csv"))
-    # data = visco.load.file('output_Mc11.csv')
-    # data = visco.load.file('output_Modified_Andrade.csv')
+    # data = visco.load.file(os.path.join(f_plot, f"output_Mc11.csv"))
+    # data = visco.load.file(os.path.join(f_plot, f"output_Modified_Andrade.csv"))
 
     RefT=float(T_input[i])
     domain = 'time'
