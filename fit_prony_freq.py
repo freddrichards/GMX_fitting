@@ -355,7 +355,7 @@ T_input=Th_input*Tsol
 
 
 for i in range(len(Th_input)):
-    
+    i=5
 
     f_plot = os.path.join(".", "plot_output_freq_"+repr(round(Th_input[i],2)))
     # f_plot = os.path.join(".", "plot_output_Mc11")
@@ -466,4 +466,10 @@ for i in range(len(Th_input)):
     
     # Plot prony parameters
     plot_param([pronyout[9],pronyoutlowTh[9]], labels=None)
+    sys.exit()
+    # Plot redimensionalised values
+    # plot_param([pronyout[9],pronyoutlowTh[9]], labels=None)s
+    
+    
+    # Fit central part (T=0.95), then scale a_i keeping tau_i fixed according to calculated J_1 differences from YT16 parameterisation, since a_is just scale with amplitude of J_1 based on 
     
