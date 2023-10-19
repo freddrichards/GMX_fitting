@@ -359,7 +359,7 @@ def calc_M1_GMX(omega,tau_i,Ea_i,Eb_i, Ea_0, Eb_0, n_prony,opt):
 # plot_modulus()
 
 ### Fit and plot Prony series
-n_prony_arr = [5, 10, 15, 20]
+n_prony_arr = [10, 15, 20]
 opt_arr=['False', 'True']
 n_Th = 31
 
