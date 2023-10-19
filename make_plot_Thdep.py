@@ -359,15 +359,15 @@ def calc_M1_GMX(omega,tau_i,Ea_i,Eb_i, Ea_0, Eb_0, n_prony,opt):
 # plot_modulus()
 
 ### Fit and plot Prony series
-n_prony_arr = [10, 20]
+n_prony_arr = [5, 10, 15, 20]
 opt_arr=['False', 'True']
 n_Th = 31
 
 # Iterate according to number of Prony elements
-for a in (range(2)):
+for a in (range(len(n_prony_arr))):
     n_prony=n_prony_arr[a]
     # Iterate according to whether relaxation time spacing is optimised or not
-    for b in (range(2)):
+    for b in (range(len(opt_arr))):
         opt=opt_arr[b]
         alpha=track_coeff_Thdep(n_prony,n_Th,opt)
         Thind1=15 #T_h = 0.95
