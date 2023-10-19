@@ -286,21 +286,27 @@ def calc_M1_GMX(omega,tau_i,Ea_i,Eb_i, Ea_0, Eb_0, n_prony,opt):
     M1b_in, M2b_in=compliance2modulus(normcompliance_YT16(tau_i,alpha[0,Thind2,0])[0],normcompliance_YT16(tau_i,alpha[0,Thind2,0])[1])
     M1a_full, M2a_full=compliance2modulus(normcompliance_YT16(tau,alpha[0,Thind1,0])[0],normcompliance_YT16(tau,alpha[0,Thind1,0])[1])
     M1b_full, M2b_full=compliance2modulus(normcompliance_YT16(tau,alpha[0,Thind2,0])[0],normcompliance_YT16(tau,alpha[0,Thind2,0])[1])
-    
+
+    # Calculate angular frequency at each relaxation time
     omega_i=(2*np.pi)/tau_i
+
+    # Calculate approximate M_1 components for input T_h from values for reference T_h and true M_1 ratio for input vs. reference T_h 
     E_b_calc=E_b(omega_i,M1a_in,M1b_in,Ea_i,Eb_i,tau_i,n_prony)
-    
+
+    # Calculate GMX-based M_1 for input T_h from approximated components 
+    # N.B., doesn't require knowledge of any Prony fits other than for reference T_h; unlike 'M1b' expressions above
     M1bcalc=np.zeros(len(omega))
     M1bcalc_ind=np.zeros((len(omega),len(tau_i)))
     for i in range(len(omega)):
         M1bcalc[i]=Eb_0+np.sum((omega[i]**2*tau_i**2*E_b_calc)/((omega[i]**2*tau_i**2)+1))
         for j in range(len(tau_i)):
             M1bcalc_ind[i,j]=(omega[i]**2*tau_i[j]**2*E_b_calc[j])/((omega[i]**2*tau_i[j]**2)+1)   
-    
+
+    # Plot real M_1 and Prony series fit M_1 for input T_h (i.e., 'true' Prony series)
     plt.clf()
     plt.plot(tau,M1b_full,'-b')
     plt.plot(tau,M1b,'.b')
-    plt.plot(tau_i,Eb_i,'oc')
+    plt.plot(tau_i,Eb_i,'ob')
     # plt.plot(tau,M1b_ind[:,0])
     # plt.plot(tau,M1b_ind[:,1])
     # plt.plot(tau,M1b_ind[:,2])
@@ -312,9 +318,10 @@ def calc_M1_GMX(omega,tau_i,Ea_i,Eb_i, Ea_0, Eb_0, n_prony,opt):
     # plt.plot(tau,M1b_ind[:,8])
     # plt.plot(tau,M1b_ind[:,9])
 
+    # Plot real M_1 and Prony series fit M_1 for reference T_h
     plt.plot(tau,M1a_full,'-k')
     plt.plot(tau,M1a,'.k')
-    plt.plot(tau_i,Ea_i,'og')
+    plt.plot(tau_i,Ea_i,'ok')
     # plt.plot(tau,M1a_ind[:,0])
     # plt.plot(tau,M1a_ind[:,1])
     # plt.plot(tau,M1a_ind[:,2])
@@ -326,8 +333,10 @@ def calc_M1_GMX(omega,tau_i,Ea_i,Eb_i, Ea_0, Eb_0, n_prony,opt):
     # plt.plot(tau,M1a_ind[:,8])
     # plt.plot(tau,M1a_ind[:,9])
 
+    # Plot Prony series using approximate M_1 components for input T_h for comparison
+    # N.B. Want to compare red and blue in these plots to see how good approximation is
     plt.plot(tau,M1bcalc,'.r', markersize=1)
-    plt.plot(tau_i,E_b_calc,'ob', markersize=1)
+    plt.plot(tau_i,E_b_calc,'or', markersize=1)
     # plt.plot(tau,M1bcalc_ind[:,0])
     # plt.plot(tau,M1bcalc_ind[:,1])
     # plt.plot(tau,M1bcalc_ind[:,2])
@@ -349,19 +358,21 @@ def calc_M1_GMX(omega,tau_i,Ea_i,Eb_i, Ea_0, Eb_0, n_prony,opt):
 ### Plot the modulus
 # plot_modulus()
 
-### Fit and plot 
+### Fit and plot Prony series
 n_prony_arr = [10, 20]
 opt_arr=['False', 'True']
 n_Th = 31
 
+# Iterate according to number of Prony elements
 for a in (range(2)):
     n_prony=n_prony_arr[a]
+    # Iterate according to whether relaxation time spacing is optimised or not
     for b in (range(2)):
         opt=opt_arr[b]
         alpha=track_coeff_Thdep(n_prony,n_Th,opt)
         Thind1=15 #T_h = 0.95
         M1_0, M2_0=compliance2modulus(normcompliance_YT16(alpha[1,Thind1,:],alpha[0,Thind1,0])[0],normcompliance_YT16(alpha[1,Thind1,:],alpha[0,Thind1,0])[1])
-        # Iterate across T_h and find E_i from J1, J2 and reference E_i (assuming fixed reference tau_i)
+        # Iterate across T_h and find E_i from J_1 (M_1) and reference E_i (assuming fixed reference tau_i)
         Thind2=0
         for i in range(len(alpha[0,:,0])):
             M1, M2=compliance2modulus(normcompliance_YT16(alpha[1,Thind2,:],alpha[0,Thind2,0])[0],normcompliance_YT16(alpha[1,Thind2,:],alpha[0,Thind2,0])[1])
